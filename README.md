@@ -1,11 +1,26 @@
-# Joplin Plugin
+# Joplin Links Metadata Plugin
 
-This is a template to create a new Joplin plugin.
+A Joplin plugins that displays the metadata from the links present on the note. 
 
-The main two files you will want to look at are:
+Joplin is an open source note taking app. Learn more about [Joplin](http://joplinapp.org).
 
-- `/src/index.ts`, which contains the entry point for the plugin source code.
-- `/src/manifest.json`, which is the plugin manifest. It contains information such as the plugin a name, version, etc.
+It has been tested on Windows, Joplin version 1.7.11 (prod).
+
+
+## Screenshot
+![screenshots/linksmeta01.PNG](/screenshots/linksmeta01.PNG)
+
+
+## Features 
+This plugins displays the website URL, the Title, the description and the oc:image.  You can toggle the pannel by cliking on the "link" icon on the WYSIWYG editor.
+![screenshots/linksmeta02.PNG](/screenshots/linksmeta02.PNG)
+
+Change the application layout `View > Change Applciation Layout` to display the links under the note (see after)
+
+## Improvements 
+I should create a way to store the Metadata in the note. Right now, it fetches the websites every time we click on a new not, which is not optimal. Moreover, I think a 404 breaks the plugin. 
+
+Pull requests more than welcome !
 
 ## Building the plugin
 
@@ -13,12 +28,9 @@ The plugin is built using Webpack, which creates the compiled code in `/dist`. A
 
 To build the plugin, simply run `npm run dist`.
 
-The project is setup to use TypeScript, although you can change the configuration to use plain JavaScript.
 
-## Updating the plugin framework
 
-To update the plugin framework, run `npm run update`.
 
-In general this command tries to do the right thing - in particular it's going to merge the changes in package.json and .gitignore instead of overwriting. It will also leave "/src" as well as README.md untouched.
 
-The file that may cause problem is "webpack.config.js" because it's going to be overwritten. For that reason, if you want to change it, consider creating a separate JavaScript file and include it in webpack.config.js. That way, when you update, you only have to restore the line that include your file.
+![screenshots/linksmeta01.PNG](/screenshots/linksmeta03.PNG)
+
