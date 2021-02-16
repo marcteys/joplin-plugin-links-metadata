@@ -58,25 +58,24 @@ joplin.plugins.register({
 
         const panels = joplin.views.panels;
         const view = await (panels as any).create('links.panel');
-        var iRunning = false;
 
         await panels.setHtml(view, '<div class="links-metadata-content"><p class="header">Links</p></div>');
         await panels.addScript(view, './webview.js');
         await panels.addScript(view, './webview.css');
 
-        async function updateTocView() {
+        async function updateTocView(forceUpdate) {
 
-            const note = await joplin.workspace.selectedNote();
+            var note = await joplin.workspace.selectedNote();
+
             if (note) {
+            //console.log(note);
 
-             iRunning = true;
-
-
-                  console.log("start display");
-
+                if(note.application_data == "" || forceUpdate == true) {
+                    // Fetch 
+                    console.log("Fetching Note Metadata");
 
                     var links = [];
-                    const linksMetadata = [];
+                    var linksMetadata = [];
                     const lines = note.body.split('\n');
                     let flag_block = false;
                     let flag_comment = false;
@@ -115,10 +114,8 @@ joplin.plugins.register({
                         }
 
                     } // End foreach line 
-
-                    var i =0;
-
-                    for await (const result of links.map(link => Meta.parser(link))) {
+                        var i =0;
+                        for await (const result of links.map(link => Meta.parser(link))) {
                         var t = result.og.title ? result.og.title : result.meta.title;
                         var d = result.og.description ? result.og.description : result.meta.description;
 
@@ -133,37 +130,48 @@ joplin.plugins.register({
 
                     } // End For
 
-                console.log(linksMetadata);
+                    var LinkShare = JSON.stringify(linksMetadata);
+                    //console.log(LinkShare)
+                    await joplin.data.put(['notes', note.id], null, { application_data: JSON.stringify(LinkShare) });
+                    console.log("Saving Metadata", note);
 
-                const itemHtml = [];
 
-                for(let htmlLink of linksMetadata) {
 
-                    var html = "";
-                    html += `<div class="item-link-metadata">`;
-                    if(htmlLink.image) {
-                      html += `<a class="metadata-image" href="`+htmlLink.link+`" rel="noopener noreferrer" target="_blank">`;
-                      html += `   <img src="`+htmlLink.image+`" rel="noopener noreferrer" style="" height="60" align="left">`;
-                      html += `</a>`;
-                    }
+                }  else { // End Fetch Metadata
+                 console.log("Reusing existing metadata");
+                }
 
-                    html += `<div style="color: #AAA;display: flex;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+htmlLink.link+`</div>`;
-                    html += `<a href="`+htmlLink.link+`" rel="noopener noreferrer" target="_blank"><strong>`+htmlLink.title+`</strong></a>`;
-                    htmlLink.description ? html += `<div style="overflow:hidden; white-space:nowrap; text-overflow:ellipsis">`+htmlLink.description+`</div>` : html += "";
-                    html += `</div>`;
-                    itemHtml.push(html);
-              }
+                if(note.application_data != "")  {
+                    var allLinks = JSON.parse(JSON.parse(note.application_data));
+                    console.log(allLinks);
 
-                await panels.setHtml(view, `
-                    <div class="links-metadata-content">
-                        <p class="header">Links</p>
-                        <div class="container">
-                            ${itemHtml.join('\n')}
-                        </div>
-					</div>
-				`);
+                    const itemHtml = [];
+                    for(let htmlLink of allLinks) {
 
-              iRunning = false;
+                        var html = "";
+                        html += `<div class="item-link-metadata">`;
+                        if(htmlLink.image) {
+                          html += `<a class="metadata-image" href="`+htmlLink.link+`" rel="noopener noreferrer" target="_blank">`;
+                          html += `   <img src="`+htmlLink.image+`" rel="noopener noreferrer" style="" height="60" align="left">`;
+                          html += `</a>`;
+                        }
+
+                        html += `<div style="color: #AAA;display: flex;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+htmlLink.link+`</div>`;
+                        html += `<a href="`+htmlLink.link+`" rel="noopener noreferrer" target="_blank"><strong>`+htmlLink.title+`</strong></a>`;
+                        htmlLink.description ? html += `<div style="overflow:hidden; white-space:nowrap; text-overflow:ellipsis">`+htmlLink.description+`</div>` : html += "";
+                        html += `</div>`;
+                        itemHtml.push(html);
+                  }
+
+                    await panels.setHtml(view, `
+                        <div class="links-metadata-content">
+                            <p class="header">Links</p>
+                            <div class="container">
+                                ${itemHtml.join('\n')}
+                            </div>
+    					</div>
+    				`);
+                    } // if there is no link
 
             } else {
                 await panels.setHtml(view, 'Please select a note to view the links.');
@@ -171,16 +179,14 @@ joplin.plugins.register({
         }
 
         await joplin.workspace.onNoteSelectionChange(() => {
-            updateTocView();
-        });
-        await joplin.workspace.onNoteChange(() => {
-            updateTocView();
-        });
-        await joplin.settings.onChange(() => {
-            updateTocView();
+            updateTocView(false);
         });
 
-        await updateTocView();
+        await joplin.workspace.onNoteContentChange(() => {
+           updateTocView(true);
+        });
+
+        await updateTocView(false);
 
         await joplin.commands.register({
             name: 'toggleLinksMetadata',
