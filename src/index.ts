@@ -57,7 +57,7 @@ joplin.plugins.register({
         await registerSettings();
 
         const panels = joplin.views.panels;
-        const view = await (panels as any).create('outline.panel');
+        const view = await (panels as any).create('links.panel');
         var iRunning = false;
 
         await panels.setHtml(view, 'Links');
@@ -86,21 +86,6 @@ joplin.plugins.register({
         async function updateTocView() {
 
             const note = await joplin.workspace.selectedNote();
-
-            const fontFamily = await settingValue('fontFamily');
-            const fontSize = await settingValue('fontSize');
-            const fontWeight = await settingValue('fontWeight');
-            const fontColor = await settingValue('fontColor');
-            const disableLinewrap = await settingValue('disableLinewrap')
-            const showNumber = await settingValue('showNumber');
-            const numberStyle = await settingValue('numberStyle');
-
-            let p_style = ""
-            if (disableLinewrap) {
-                p_style += "white-space: nowrap;text-overflow:ellipsis;overflow:hidden;"
-            }
-
-
             if (note) {
 
              iRunning = true;
@@ -218,14 +203,14 @@ joplin.plugins.register({
         await updateTocView();
 
         await joplin.commands.register({
-            name: 'toggleOutline',
-            label: 'Toggle Outline',
-            iconName: 'fas fa-bars',
+            name: 'toggleLinksMetadata',
+            label: 'Toggle Links Metadata',
+            iconName: 'fas fa-link',
             execute: async () => {
                 const isVisible = await (panels as any).visible(view);
                 (panels as any).show(view, !isVisible);
             },
         });
-        await joplin.views.toolbarButtons.create('toggleOutline', 'toggleOutline', ToolbarButtonLocation.NoteToolbar);
+        await joplin.views.toolbarButtons.create('toggleLinksMetadata', 'toggleLinksMetadata', ToolbarButtonLocation.NoteToolbar);
     },
 });
