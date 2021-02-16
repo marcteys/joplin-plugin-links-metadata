@@ -181,7 +181,7 @@ joplin.plugins.register({
                       html += `</a>`;
                     }
 
-                    html += `<div style="color: #AAA;">`+htmlLink.link+`</div>`;
+                    html += `<div style="color: #AAA;display: flex;">`+htmlLink.link+`</div>`;
                     html += `<a href="`+htmlLink.link+`" rel="noopener noreferrer" target="_blank"><strong>`+htmlLink.title+`</strong></a>`;
                     htmlLink.description ? html += `<div style="overflow:hidden; white-space:nowrap; text-overflow:ellipsis">`+htmlLink.description+`</div>` : html += "";
                     html += `</div>`;

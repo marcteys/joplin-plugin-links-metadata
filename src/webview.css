@@ -1,23 +1,56 @@
 html {
     overflow: auto;
-    color: red;
 }
 
-.header {
+.links-metadata-content .header {
     margin-top: 10px;
     font-size: 13px;
     font-weight: bold;
+    text-transform: uppercase;
+    margin-left: 15px;
 }
 
-.toc-item a {
-    padding: 0 2px;
-    text-decoration: none;
+
+.item-link-metadata {
+	position: relative;
+	display: block;
+	clear: both;
+    min-height: 20px;
+    padding-left: 10px;
+    padding: 5px;
+    margin: 10px 20px;
+        line-height: 1.2rem;
 }
 
-.toc-item a:hover {
-	text-decoration: underline;
+.metadata-image {
+	max-width: 120px;
+	overflow: hidden;
+	width: auto;
+	display: inline-block;
+	float: left;
+	margin-right: 10px;
 }
 
+
+.item-link-metadata::before {
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    background: #eaeaea;
+    content: " ";
+    left: -5px;
+
+}
+.item-link-metadata::after {
+
+    display: table;
+    clear: both;
+    content: "";
+
+}
 ::-webkit-scrollbar {
 	width: 7px;
 	height: 7px;
