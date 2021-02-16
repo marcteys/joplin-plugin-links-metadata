@@ -60,28 +60,9 @@ joplin.plugins.register({
         const view = await (panels as any).create('links.panel');
         var iRunning = false;
 
-        await panels.setHtml(view, 'Links');
+        await panels.setHtml(view, '<div class="links-metadata-content"><p class="header">Links</p></div>');
         await panels.addScript(view, './webview.js');
         await panels.addScript(view, './webview.css');
-
-        await panels.onMessage(view, async (message: any) => {
-            console.log(message);
-            if (message.name === 'scrollToHash') {
-                await joplin.commands.execute('scrollToHash', message.hash)
-            } else if (message.name === 'contextMenu') {
-                const noteId = (await joplin.workspace.selectedNoteIds())[0]
-                const noteTitle = (await joplin.data.get(['notes', noteId], { fields: ['title'] } )).title
-                const innerLink = `[${noteTitle}#${message.content}](:/${noteId}#${message.hash})`
-
-                let input = document.createElement("input");
-                input.setAttribute("value", innerLink);
-                document.body.appendChild(input);
-                input.select();
-                document.execCommand("copy");
-                document.body.removeChild(input);
-                alert(`The inner link has been copied to clipboard:\n${innerLink}`)
-            }
-        });
 
         async function updateTocView() {
 
@@ -166,7 +147,7 @@ joplin.plugins.register({
                       html += `</a>`;
                     }
 
-                    html += `<div style="color: #AAA;display: flex;">`+htmlLink.link+`</div>`;
+                    html += `<div style="color: #AAA;display: flex;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;">`+htmlLink.link+`</div>`;
                     html += `<a href="`+htmlLink.link+`" rel="noopener noreferrer" target="_blank"><strong>`+htmlLink.title+`</strong></a>`;
                     htmlLink.description ? html += `<div style="overflow:hidden; white-space:nowrap; text-overflow:ellipsis">`+htmlLink.description+`</div>` : html += "";
                     html += `</div>`;
@@ -175,7 +156,6 @@ joplin.plugins.register({
 
                 await panels.setHtml(view, `
                     <div class="links-metadata-content">
-                     <i class="fas fa-link"></i>
                         <p class="header">Links</p>
                         <div class="container">
                             ${itemHtml.join('\n')}
