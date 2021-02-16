@@ -1,0 +1,1 @@
+# joplin-plugin-links-metadata
