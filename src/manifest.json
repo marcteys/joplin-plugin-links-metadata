@@ -2,11 +2,11 @@
 	"manifest_version": 1,
 	"id": "joplin.marcteyssier.linksmetadata",
 	"app_min_version": "1.7",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"name": "Links Metadata",
 	"description": "Add links meta data",
 	"author": "Marc Teyssier",
-	"homepage_url": "https://marcteyssier.com",
+	"homepage_url": "https://github.com/marcteys/joplin-plugin-links-metadata",
 	"repository_url": "https://github.com/marcteys/joplin-plugin-links-metadata",
 	"keywords": []
 }
